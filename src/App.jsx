@@ -15,7 +15,7 @@ import Signup from "./components/Signup";
 import axios from "axios";
 import Profile from "./pages/Profile";
 
-const API_URL = "http://localhost:4000";
+const API_URL = "https://expense-tracker-api-rho.vercel.app/";
 
 // to get transactions from localstorage
 const getTransactionsFromStorage = () => {
