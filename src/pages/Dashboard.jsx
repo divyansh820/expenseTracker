@@ -45,12 +45,20 @@ import {
   Tooltip,
 } from "recharts";
 
-const API_BASE = "http://localhost:4000/api";
+const API_BASE = "https://expense-tracker-api-rho.vercel.app/api";
 
 const getAuthHeader = () => {
   const token =
-    localStorage.getItem("token") || localStorage.getItem("authToken");
-  return token ? { Authorization: `Bearer ${token}` } : {};
+    localStorage.getItem("token") ||
+    sessionStorage.getItem("token") ||
+    localStorage.getItem("authToken") ||
+    sessionStorage.getItem("authToken");
+
+  return token
+    ? {
+        Authorization: `Bearer ${token}`,
+      }
+    : {};
 };
 
 // to convert the date in ISO timeline
@@ -188,6 +196,8 @@ const Dashboard = () => {
       ? overviewMeta.savings
       : currentTimeFrameData.savings;
 
+      console.log(displayExpenses)
+
   // expense change here
   const expenseChange = useMemo(() => {
     const prev = prevTimeFrameData.expenses;
@@ -279,6 +289,8 @@ const Dashboard = () => {
       });
       if (res?.data?.success) {
         const data = res.data.data;
+        console.log(data);
+
         const recent = (data.recentTransactions || []).map((item) => {
           const typeFromServer =
             item.type || (item.category ? "expense" : "income");
@@ -308,6 +320,8 @@ const Dashboard = () => {
             raw: item,
           };
         });
+
+        console.log(data)
 
         setOverviewMeta((prev) => ({
           ...prev,
@@ -362,6 +376,10 @@ const Dashboard = () => {
     fetchDashboardOverview();
   }, []);
 
+  useEffect(() => {
+  console.log("Updated overviewMeta:", overviewMeta);
+}, [overviewMeta]);
+
   //add / edit or delete
   const handleAddTransaction = async () => {
     if (!newTransaction.description || !newTransaction.amount) return;
@@ -387,7 +405,7 @@ const Dashboard = () => {
       await fetchDashboardOverview();
 
       setNewTransaction({
-        date: new Date().toISOString.split("|")[0],
+        date: new Date().toISOString().split("T")[0],
         description: "",
         amount: "",
         type: "expense",

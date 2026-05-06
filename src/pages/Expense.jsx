@@ -30,7 +30,7 @@ import { getTimeFrameRange, generateChartPoints } from "../components/Helpers";
 import { CATEGORY_ICONS } from "../assets/color";
 import { expensePageStyles as styles } from "../assets/dummyStyles";
 
-const API_BASE = "http://localhost:4000/api";
+const API_BASE = "https://expense-tracker-seven-cyan-82.vercel.app/api";
 
 /**
  * Helper: convert date (or datetime) to ISO by attaching client current time
@@ -298,6 +298,8 @@ const ExpensePage = () => {
         category: newTransaction.category,
         date: toIsoWithClientTime(newTransaction.date),
       };
+
+      console.log(payload)
 
       await handleApiRequest("post", "/expense/add", payload);
 
