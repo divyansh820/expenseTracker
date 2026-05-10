@@ -4,7 +4,7 @@ import { Eye, EyeOff, FastForward,  Lock, Mail, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Login = ({ onLogin, API_URL = "https://expense-tracker-api-rho.vercel.app/" }) => {
+const Login = ({ onLogin, API_URL = "https://expense-tracker-api-two-sepia.vercel.app" }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);

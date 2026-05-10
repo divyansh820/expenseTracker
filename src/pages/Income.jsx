@@ -31,7 +31,7 @@ import { getTimeFrameRange, generateChartPoints } from "../components/Helpers";
 import { INCOME_COLORS, CATEGORY_ICONS_Inc } from "../assets/color";
 import { incomeStyles as styles } from "../assets/dummyStyles";
 
-const API_BASE = "https://expense-tracker-seven-cyan-82.vercel.app/api";
+const API_BASE = "https://expense-tracker-api-two-sepia.vercel.app/api";
 
 function toIsoWithClientTime(dateValue) {
   if (!dateValue) {

@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { Outlet, useOutletContext } from "react-router-dom";
 
-const API_BASE = "https://expense-tracker-seven-cyan-82.vercel.app/api";
+const API_BASE = "https://expense-tracker-api-two-sepia.vercel.app/api";
 const CATEGORY_ICONS = {
   Food: <Utensils className="w-4 h-4" />,
   Housing: <Home className="w-4 h-4" />,
@@ -375,7 +375,7 @@ const Layout = ({ onLogout, user }) => {
                 </p>
               </div>
 
-                {/* for expenses */}
+              {/* for expenses */}
               <div className={styles.statCards.iconContainer("orange")}>
                 <ArrowDown className={styles.statCards.icon("orange")} />
               </div>

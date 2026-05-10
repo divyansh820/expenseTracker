@@ -45,7 +45,7 @@ import {
   Tooltip,
 } from "recharts";
 
-const API_BASE = "https://expense-tracker-api-rho.vercel.app/api";
+const API_BASE = "https://expense-tracker-api-two-sepia.vercel.app/api";
 
 const getAuthHeader = () => {
   const token =

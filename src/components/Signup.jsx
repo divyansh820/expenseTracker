@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { signupStyles } from "../assets/dummyStyles";
 import axios from "axios";
-import { ArrowLeft, Eye, EyeOff,  Lock, Mail, User } from "lucide-react";
-import {Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
-const Signup = ({ API_URL = "https://expense-tracker-api-rho.vercel.app/", onSignup }) => {
+const Signup = ({
+  API_URL = "https://expense-tracker-api-two-sepia.vercel.app",
+  onSignup,
+}) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -64,7 +67,7 @@ const Signup = ({ API_URL = "https://expense-tracker-api-rho.vercel.app/", onSig
     setIsLoading(true);
     try {
       const res = await axios.post(
-        `   ${API_URL}/api/user/register`,
+        `${API_URL}/api/user/register`,
         { name, email, password },
         { headers: { "Content-Type": "application/json" } },
       );
@@ -221,7 +224,7 @@ const Signup = ({ API_URL = "https://expense-tracker-api-rho.vercel.app/", onSig
               )}
             </div>
 
-          {/* remember me */}
+            {/* remember me */}
             <div className={signupStyles.checkboxContainer}>
               <input
                 type="checkbox"
@@ -270,15 +273,14 @@ const Signup = ({ API_URL = "https://expense-tracker-api-rho.vercel.app/", onSig
               )}
             </button>
           </form>
-                <div className={signupStyles.signInContainer}>
-                    <p className={signupStyles.signInContainer}>
-                        Already have an account?{" "}
-                        <Link to="/login" className={signupStyles.signInLink}>
-                        Sign in
-                        </Link>
-                    </p>
-                </div>
-
+          <div className={signupStyles.signInContainer}>
+            <p className={signupStyles.signInContainer}>
+              Already have an account?{" "}
+              <Link to="/login" className={signupStyles.signInLink}>
+                Sign in
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

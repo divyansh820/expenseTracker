@@ -30,7 +30,7 @@ import { getTimeFrameRange, generateChartPoints } from "../components/Helpers";
 import { CATEGORY_ICONS } from "../assets/color";
 import { expensePageStyles as styles } from "../assets/dummyStyles";
 
-const API_BASE = "https://expense-tracker-seven-cyan-82.vercel.app/api";
+const API_BASE = "https://expense-tracker-api-two-sepia.vercel.app/api";
 
 /**
  * Helper: convert date (or datetime) to ISO by attaching client current time

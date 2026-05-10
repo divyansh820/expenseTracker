@@ -15,7 +15,7 @@ import Signup from "./components/Signup";
 import axios from "axios";
 import Profile from "./pages/Profile";
 
-const API_URL = "https://expense-tracker-api-rho.vercel.app";
+const API_URL = "https://expense-tracker-api-two-sepia.vercel.app";
 
 // to get transactions from localstorage
 const getTransactionsFromStorage = () => {
@@ -197,7 +197,10 @@ const App = () => {
     <>
       <ScrollToTop />
       <Routes>
-        <Route path="/login" element={<Login onLogin={handleLogin} API_URL={API_URL}/>} />
+        <Route
+          path="/login"
+          element={<Login onLogin={handleLogin} API_URL={API_URL} />}
+        />
         <Route path="/signup" element={<Signup onSignup={handleSignup} />} />
 
         <Route
@@ -262,7 +265,10 @@ const App = () => {
           />
         </Route>
 
-        <Route path="*" element={<Navigate to ={user ? "/" : "/login"} replace />}/>
+        <Route
+          path="*"
+          element={<Navigate to={user ? "/" : "/login"} replace />}
+        />
       </Routes>
     </>
   );
