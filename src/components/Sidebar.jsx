@@ -13,6 +13,8 @@ import {
   X,
 } from "lucide-react";
 
+import { clearAuthStorage } from "../config/api";
+
 const MENU_ITEMS = [
   { text: "Dashboard", path: "/", icon: <Home size={20} /> },
   { text: "Income", path: "/income", icon: <ArrowUp size={20} /> },
@@ -20,7 +22,7 @@ const MENU_ITEMS = [
   { text: "Profile", path: "/profile", icon: <User size={20} /> },
 ];
 
-const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
+const Sidebar = ({ user, isCollapsed, setIsCollapsed, onLogout }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
@@ -40,7 +42,6 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
   }, [mobileOpen]);
 
   // if we clicked outside the box it collapsed
-
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
@@ -56,9 +57,9 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
   }, [mobileOpen]);
 
   // to logout
-
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    clearAuthStorage();
+    onLogout?.();
     navigate("/login");
   };
 

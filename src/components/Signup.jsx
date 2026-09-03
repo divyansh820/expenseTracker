@@ -3,11 +3,13 @@ import { signupStyles } from "../assets/dummyStyles";
 import axios from "axios";
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../config/api";
 
 const Signup = ({
-  API_URL = "https://expense-tracker-api-two-sepia.vercel.app",
+  API_URL: propApiUrl,
   onSignup,
 }) => {
+  const activeApiUrl = propApiUrl || API_URL;
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -18,13 +20,12 @@ const Signup = ({
   const navigate = useNavigate();
 
   // to fetch profile
-
   const fetchProfile = async (token) => {
     if (!token) return null;
-    const res = await axios.get(`${API_URL}/api/user/me`, {
+    const res = await axios.get(`${activeApiUrl}/api/user/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return res.data;
+    return res.data?.user || res.data;
   };
 
   const persistAuth = (profile, token) => {
@@ -37,7 +38,7 @@ const Signup = ({
     }
   };
 
-  // to validate that all fields are filled by user  or not
+  // to validate that all fields are filled by user or not
   const validateForm = () => {
     const newErrors = {};
 
@@ -46,13 +47,13 @@ const Signup = ({
     }
     if (!email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Email is invalid";
+    } else if (!/\S+@\S+\.\S+/.test(email.trim())) {
+      newErrors.email = "Please enter a valid email address";
     }
     if (!password) {
       newErrors.password = "Password is required";
-    } else if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
     }
 
     setErrors(newErrors);
@@ -67,8 +68,8 @@ const Signup = ({
     setIsLoading(true);
     try {
       const res = await axios.post(
-        `${API_URL}/api/user/register`,
-        { name, email, password },
+        `${activeApiUrl}/api/user/register`,
+        { name: name.trim(), email: email.trim().toLowerCase(), password },
         { headers: { "Content-Type": "application/json" } },
       );
 
@@ -76,7 +77,6 @@ const Signup = ({
       const token = data.token ?? null;
       let profile = data.user ?? null;
       if (!profile) {
-        // check for any extra fields returned that could be user info
         const copy = { ...data };
         delete copy.token;
         delete copy.user;
@@ -111,8 +111,10 @@ const Signup = ({
         setErrors(err.response.data.errors);
       } else if (err.response?.data?.message) {
         setErrors({ api: err.response.data.message });
+      } else if (err.code === "ERR_NETWORK") {
+        setErrors({ api: "Server unavailable. Please check backend server connection." });
       } else {
-        setErrors({ api: err.message || "An unexpected error occurred" });
+        setErrors({ api: err.message || "An unexpected error occurred during signup" });
       }
     } finally {
       setIsLoading(false);
@@ -229,11 +231,11 @@ const Signup = ({
               <input
                 type="checkbox"
                 id="remember"
-                value={rememberMe}
+                checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className={signupStyles.checkbox}
               />
-              <label htmlFor="remeber" className={signupStyles.checkboxLabel}>
+              <label htmlFor="remember" className={signupStyles.checkboxLabel}>
                 Remember Me
               </label>
             </div>
@@ -263,7 +265,7 @@ const Signup = ({
                     <path
                       className="opacity-75"
                       fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2-647z"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
                   Creating account...

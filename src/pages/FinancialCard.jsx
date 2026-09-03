@@ -8,7 +8,6 @@ const FinancialCard = ({
   borderColor = "",
   bgColor = "bg-white",
 }) => {
-  console.log(value)
   return (
     <div
       className={`${bgColor} rounded-xl p-5 lg:-mx-2 lg:p-2 shadow-sm border border-gray-100 hover:shadow-md transition-all ${borderColor} `}
@@ -16,10 +15,8 @@ const FinancialCard = ({
       <div className="text-sm font-medium text-gray-600 flex items-center gap-2">
         {icon}
         {label}
-      hello
-      
       </div>
-      <p  className="text-2xl font-bold text-gray-800 mt-1">
+      <p className="text-2xl font-bold text-gray-800 mt-1">
         {value}
       </p>
       {additionalContent}

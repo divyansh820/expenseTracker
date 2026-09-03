@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { loginStyles } from "../assets/dummyStyles";
-import { Eye, EyeOff, FastForward,  Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, FastForward, Lock, Mail, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../config/api";
 
-const Login = ({ onLogin, API_URL = "https://expense-tracker-api-two-sepia.vercel.app" }) => {
+const Login = ({ onLogin, API_URL: propApiUrl }) => {
+  const activeApiUrl = propApiUrl || API_URL;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -14,13 +16,12 @@ const Login = ({ onLogin, API_URL = "https://expense-tracker-api-two-sepia.verce
   const navigate = useNavigate();
 
   // to fetch profile
-
   const fetchProfile = async (token) => {
     if (!token) return null;
-    const res = await axios.get(`${API_URL}/api/user/me`, {
+    const res = await axios.get(`${activeApiUrl}/api/user/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return res.data;
+    return res.data?.user || res.data;
   };
 
   const persistAuth = (profile, token) => {
@@ -41,8 +42,8 @@ const Login = ({ onLogin, API_URL = "https://expense-tracker-api-two-sepia.verce
 
     try {
       const res = await axios.post(
-        `${API_URL}/api/user/login`,
-        { email, password },
+        `${activeApiUrl}/api/user/login`,
+        { email: email.trim().toLowerCase(), password },
         { headers: { "Content-Type": "application/json" } },
       );
 
@@ -88,11 +89,14 @@ const Login = ({ onLogin, API_URL = "https://expense-tracker-api-two-sepia.verce
       setPassword("");
     } catch (err) {
       console.error("Login error:", err?.response || err);
-      const serverMsg =
-        err.response?.data?.message ||
-        (err.response?.data ? JSON.stringify(err.response.data) : null) ||
-        err.message ||
-        "Login failed";
+      let serverMsg = "Invalid email or password";
+      if (err.response?.data?.message) {
+        serverMsg = err.response.data.message;
+      } else if (err.code === "ERR_NETWORK") {
+        serverMsg = "Server unavailable. Please check backend server connection.";
+      } else if (err.message) {
+        serverMsg = err.message;
+      }
       setError(serverMsg);
     } finally {
       setIsLoading(false);
@@ -191,9 +195,8 @@ const Login = ({ onLogin, API_URL = "https://expense-tracker-api-two-sepia.verce
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className={loginStyles.checkbox}
-                required
               />
-              <label htmlFor="remember " className={loginStyles.checkboxLabel}>
+              <label htmlFor="remember" className={loginStyles.checkboxLabel}>
                 Remember Me
               </label>
             </div>

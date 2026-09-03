@@ -5,8 +5,7 @@ import { Eye, EyeOff, User, Lock, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-
-const BASE_URL = "https://expense-tracker-api-rho.vercel.app/api";
+import { API_BASE, getAuthToken, clearAuthStorage } from "../config/api";
 
 Modal.setAppElement("#root");
 // Move PasswordInput component outside of ProfilePage to prevent recreation on every render
@@ -71,8 +70,6 @@ const Profile = ({ onUpdateProfile, onLogout }) => {
   const [passwordErrors, setPasswordErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const getAuthToken = useCallback(() => localStorage.getItem("token"), []);
-
   //API REQUEST
   const handleApiRequest = useCallback(
     async (method, getEndPoints, data = null) => {
@@ -85,7 +82,7 @@ const Profile = ({ onUpdateProfile, onLogout }) => {
         setLoading(true);
         const config = {
           method,
-          url: `${BASE_URL}${getEndPoints}`,
+          url: `${API_BASE}${getEndPoints}`,
           headers: { Authorization: `Bearer ${token}` },
         };
         if (data) config.data = data;
@@ -94,6 +91,7 @@ const Profile = ({ onUpdateProfile, onLogout }) => {
       } catch (error) {
         console.error(`${method} request error: `, error);
         if (error.response?.status === 401) {
+          clearAuthStorage();
           navigate("/login");
         }
         throw error;
@@ -101,7 +99,7 @@ const Profile = ({ onUpdateProfile, onLogout }) => {
         setLoading(false);
       }
     },
-    [getAuthToken, navigate],
+    [navigate],
   );
 
   // to fetch current user
@@ -202,8 +200,9 @@ const Profile = ({ onUpdateProfile, onLogout }) => {
   };
 
   const handleLogout = useCallback(() => {
+    clearAuthStorage();
     onLogout?.();
-    navigate("/signup");
+    navigate("/login");
   }, [onLogout, navigate]);
 
   const closePasswordModal = useCallback(() => {

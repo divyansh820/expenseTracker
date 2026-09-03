@@ -30,8 +30,7 @@ import FinancialCard from "./FinancialCard";
 import { getTimeFrameRange, generateChartPoints } from "../components/Helpers";
 import { INCOME_COLORS, CATEGORY_ICONS_Inc } from "../assets/color";
 import { incomeStyles as styles } from "../assets/dummyStyles";
-
-const API_BASE = "https://expense-tracker-api-two-sepia.vercel.app/api";
+import { API_BASE, getAuthHeaders } from "../config/api";
 
 function toIsoWithClientTime(dateValue) {
   if (!dateValue) {
@@ -198,11 +197,6 @@ const Income = () => {
     category: "Salary",
     date: new Date().toISOString().split("T")[0],
   });
-
-  const getAuthHeaders = useCallback(() => {
-    const token = localStorage.getItem("token");
-    return token ? { Authorization: `Bearer ${token}` } : {};
-  }, []);
 
   const timeFrameRange = useMemo(
     () => getTimeFrameRange(timeFrame, null),

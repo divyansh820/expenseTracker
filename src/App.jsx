@@ -14,25 +14,33 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import axios from "axios";
 import Profile from "./pages/Profile";
-
-const API_URL = "https://expense-tracker-api-two-sepia.vercel.app";
+import {
+  API_URL,
+  getAuthToken,
+  getStoredUser,
+  clearAuthStorage,
+} from "./config/api";
 
 // to get transactions from localstorage
 const getTransactionsFromStorage = () => {
-  const saved = localStorage.getItem("transactions");
-  return saved ? JSON.parse(saved) : [];
+  try {
+    const saved = localStorage.getItem("transactions");
+    return saved ? JSON.parse(saved) : [];
+  } catch (err) {
+    console.error("Error reading transactions from storage:", err);
+    return [];
+  }
 };
+
 // to protect the routes
 const ProtectedRoute = ({ user, isLoading, children }) => {
-  const localToken = localStorage.getItem("token");
-  const sessionToken = sessionStorage.getItem("token");
-  const hasToken = localToken || sessionToken;
+  const token = getAuthToken();
 
   if (isLoading) {
     return <div></div>;
   }
 
-  if (!user || !hasToken) {
+  if (!user || !token) {
     return <Navigate to="/login" replace />;
   }
   return children;
@@ -77,14 +85,7 @@ const App = () => {
   };
 
   const clearAuth = () => {
-    try {
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("user");
-      (sessionStorage, removeItem("token"));
-    } catch (err) {
-      console.error("ClearAuth Error : ", err);
-    }
+    clearAuthStorage();
     setUser(null);
     setToken(null);
   };
@@ -201,7 +202,10 @@ const App = () => {
           path="/login"
           element={<Login onLogin={handleLogin} API_URL={API_URL} />}
         />
-        <Route path="/signup" element={<Signup onSignup={handleSignup} />} />
+        <Route
+          path="/signup"
+          element={<Signup onSignup={handleSignup} API_URL={API_URL} />}
+        />
 
         <Route
           element={

@@ -29,8 +29,7 @@ import AddTransactionModal from "../components/Add";
 import { getTimeFrameRange, generateChartPoints } from "../components/Helpers";
 import { CATEGORY_ICONS } from "../assets/color";
 import { expensePageStyles as styles } from "../assets/dummyStyles";
-
-const API_BASE = "https://expense-tracker-api-two-sepia.vercel.app/api";
+import { API_BASE, getAuthHeaders } from "../config/api";
 
 /**
  * Helper: convert date (or datetime) to ISO by attaching client current time
@@ -87,19 +86,13 @@ const ExpensePage = () => {
     type: "expense",
     category: "Food",
   });
-  const [setOverview] = useState({
+  const [overview, setOverview] = useState({
     totalExpense: 0,
     averageExpense: 0,
     numberOfTransactions: 0,
     recentTransactions: [],
     range: "monthly",
   });
-
-  // Auth headers helper
-  const getAuthHeaders = useCallback(() => {
-    const token = localStorage.getItem("token");
-    return token ? { Authorization: `Bearer ${token}` } : {};
-  }, []);
 
   // Fetch overview (GET /expense/overview?range=...)
   const fetchOverview = useCallback(

@@ -44,22 +44,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-
-const API_BASE = "https://expense-tracker-api-two-sepia.vercel.app/api";
-
-const getAuthHeader = () => {
-  const token =
-    localStorage.getItem("token") ||
-    sessionStorage.getItem("token") ||
-    localStorage.getItem("authToken") ||
-    sessionStorage.getItem("authToken");
-
-  return token
-    ? {
-        Authorization: `Bearer ${token}`,
-      }
-    : {};
-};
+import { API_BASE, getAuthHeaders as getAuthHeader } from "../config/api";
 
 // to convert the date in ISO timeline
 function toIsoWithClientTime(dateValue) {
@@ -196,7 +181,7 @@ const Dashboard = () => {
       ? overviewMeta.savings
       : currentTimeFrameData.savings;
 
-      console.log(displayExpenses)
+  console.log(displayExpenses);
 
   // expense change here
   const expenseChange = useMemo(() => {
@@ -321,7 +306,7 @@ const Dashboard = () => {
           };
         });
 
-        console.log(data)
+        console.log(data);
 
         setOverviewMeta((prev) => ({
           ...prev,
@@ -377,8 +362,8 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-  console.log("Updated overviewMeta:", overviewMeta);
-}, [overviewMeta]);
+    console.log("Updated overviewMeta:", overviewMeta);
+  }, [overviewMeta]);
 
   //add / edit or delete
   const handleAddTransaction = async () => {

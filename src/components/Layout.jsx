@@ -25,8 +25,8 @@ import {
   PieChart,
 } from "lucide-react";
 import { Outlet, useOutletContext } from "react-router-dom";
+import { API_BASE, getAuthHeaders } from "../config/api";
 
-const API_BASE = "https://expense-tracker-api-two-sepia.vercel.app/api";
 const CATEGORY_ICONS = {
   Food: <Utensils className="w-4 h-4" />,
   Housing: <Home className="w-4 h-4" />,
@@ -84,8 +84,7 @@ const Layout = ({ onLogout, user }) => {
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers = getAuthHeaders();
 
       const [incomeRes, expenseRes] = await Promise.all([
         axios.get(`${API_BASE}/income/get`, { headers }),
@@ -128,8 +127,7 @@ const Layout = ({ onLogout, user }) => {
   // to add the incoe or expense
   const addTransaction = async (transaction) => {
     try {
-      const token = localStorage.getItem("token");
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers = getAuthHeaders();
       const endpoint =
         transaction.type === "income" ? "income/add" : "expense/add";
       await axios.post(`${API_BASE}/${endpoint}`, transaction, { headers });
@@ -147,8 +145,7 @@ const Layout = ({ onLogout, user }) => {
   // to update any transaction
   const editTransaction = async (id, transaction) => {
     try {
-      const token = localStorage.getItem("token");
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers = getAuthHeaders();
       const endpoint =
         transaction.type === "income" ? "income/update" : "expense/update";
       await axios.put(`${API_BASE}/${endpoint}/${id}`, transaction, {
@@ -167,8 +164,7 @@ const Layout = ({ onLogout, user }) => {
 
   const deleteTransaction = async (id, type) => {
     try {
-      const token = localStorage.getItem("token");
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers = getAuthHeaders();
       const endpoint = type === "income" ? "income/delete" : "expense/delete";
       await axios.delete(`${API_BASE}/${endpoint}/${id}`, { headers });
       await fetchTransactions();
@@ -309,6 +305,7 @@ const Layout = ({ onLogout, user }) => {
         user={user}
         isCollapsed={sidebarCollapsed}
         setIsCollapsed={setSidebarCollapsed}
+        onLogout={onLogout}
       />
       <div className={styles.layout.mainContainer(sidebarCollapsed)}>
         <div className={styles.header.container}>

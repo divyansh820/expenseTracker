@@ -4,32 +4,32 @@ import img1 from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, LogOut, User } from "lucide-react";
 import axios from "axios";
-
-const BASE_URL = "https://expense-tracker-api-rho.vercel.app/api/";
+import { API_BASE, getAuthHeaders, clearAuthStorage } from "../config/api";
 
 const Navbar = ({ user: propUser, onLogout }) => {
   const navigate = useNavigate();
   const menuRef = useRef();
   const [menuOpen, setMenuOpen] = useState(false);
-  const user = propUser || {
+  const [profileUser, setProfileUser] = useState(null);
+  const user = propUser || profileUser || {
     name: "",
     email: "",
   };
 
-  // to fetch the user data from server
+  // to fetch the user data from server if not provided
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
+        const headers = getAuthHeaders();
+        if (!headers.Authorization) return;
 
-        const response = await axios.get(`${BASE_URL}/user/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const userData = response.data.user || response.data;
-        set;
+        const response = await axios.get(`${API_BASE}/user/me`, { headers });
+        const userData = response.data?.user || response.data;
+        if (userData) {
+          setProfileUser(userData);
+        }
       } catch (error) {
-        console.error("Failed to load profile ", error);
+        console.error("Failed to load profile in navbar:", error);
       }
     };
 
@@ -42,7 +42,7 @@ const Navbar = ({ user: propUser, onLogout }) => {
 
   const handleLogout = () => {
     setMenuOpen(false);
-    localStorage.removeItem("token");
+    clearAuthStorage();
     onLogout?.();
     navigate("/login");
   };
